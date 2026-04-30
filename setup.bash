@@ -14,16 +14,16 @@ echo "================================================================="
 echo "[1/6] Updating system and installing dependencies..."
 sudo apt update
 sudo apt install -y build-essential cmake libfftw3-dev libmbedtls-dev \
-    liblksctp-dev libconfig++-dev libsctp-dev libyaml-cpp-dev \
+    libconfig++-dev libsctp-dev libyaml-cpp-dev \
     libgtest-dev git net-tools curl wget software-properties-common gnupg \
     libzmq3-dev
 
-# Install MongoDB (Required for Open5GS)
+# Install MongoDB 8.0 (Required for Open5GS on Ubuntu 24.04)
 echo "Installing MongoDB..."
-curl -fsSL https://pgp.mongodb.com/server-6.0.asc | \
-   sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor --yes
-echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | \
-   sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor --yes
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | \
+   sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
 sudo apt update
 sudo apt install -y mongodb-org
 sudo systemctl start mongod
@@ -50,12 +50,15 @@ else
     echo "Please ensure they are in the correct location."
 fi
 
-# 3. Install UHD Driver
+# 3. Install UHD Driver and Download Base Images
 echo "[3/6] Installing UHD Drivers..."
 sudo apt install -y libuhd-dev uhd-host
 
+echo "Downloading base UHD images..."
+sudo uhd_images_downloader
+
 # 4. Handle UHD Images
-echo "[4/6] Configuring UHD Images..."
+echo "[4/6] Configuring Custom UHD Images..."
 UHD_IMAGES_DIR="$REPO_DIR/UHD_images"
 SELECTED_UHD_IMAGE=""
 
@@ -77,7 +80,7 @@ if [ -d "$UHD_IMAGES_DIR" ]; then
     done
 else
     echo "Warning: Directory $UHD_IMAGES_DIR does not exist in the repository."
-    echo "Skipping local UHD image setup."
+    echo "Skipping custom local UHD image setup."
 fi
 
 # Step 4b: If an image was selected, ask where to put it
@@ -91,7 +94,7 @@ if [ -n "$SELECTED_UHD_IMAGE" ]; then
         shopt -u nullglob
 
         if [ ${#available_dirs[@]} -gt 0 ]; then
-            echo "Please select the target directory for the UHD image:"
+            echo "Please select the target directory for the custom UHD image:"
             options=("${available_dirs[@]}" "Type a custom path instead")
             
             PS3="Enter the number of your choice: "
@@ -123,9 +126,9 @@ if [ -n "$SELECTED_UHD_IMAGE" ]; then
     echo "Target directory set to: $TARGET_UHD_DIR"
     
     sudo mkdir -p "$TARGET_UHD_DIR"
-    echo "Copying image to $TARGET_UHD_DIR..."
+    echo "Copying custom image to $TARGET_UHD_DIR..."
     sudo cp -r "$SELECTED_UHD_IMAGE" "$TARGET_UHD_DIR/"
-    echo "UHD Image copied successfully."
+    echo "Custom UHD Image copied successfully."
 fi
 
 # 5. Clone and Build srsRAN_4G
