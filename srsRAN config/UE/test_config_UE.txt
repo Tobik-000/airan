@@ -1,0 +1,48 @@
+[rf]
+# Hardware & Timing
+device_name = uhd
+# lo_offset=5e6 moves the internal noise spike away from the 5G signal center
+#device_args = serial=85VJILW,clock=external
+device_args = type=b200,clock_source=external
+srate = 11.52e6
+tx_gain = 70
+rx_gain = 30
+nof_antennas = 1
+time_adv_nsamples = 300
+freq_offset = 0
+
+[rat.nr]
+# This MUST match the gNB's dl_arfcn
+#dl_nr_arfcn = 368500
+#dl_nr_arfcn = 152460
+bands = 3
+#bands = 28
+nof_carriers = 1
+# 10MHz = 52 PRBs
+max_nof_prb = 52
+nof_prb = 52
+
+[rat.eutra]
+dl_earfcn = 2850
+nof_carriers = 0
+
+[usim]
+mode = soft
+algo = milenage
+opc  = 63BFA50EE6523365FF14C1F45F88737D
+k    = 00112233445566778899aabbccddeeff
+imsi = 001010123456780
+# Fixed: Added a valid 15-digit IMEI to satisfy the USIM requirements
+imei = 353490069873319
+
+[nas]
+apn = srsapn
+apn_protocol = ipv4
+
+[log]
+all_level = info
+phy_level = info
+filename = /tmp/ue.log
+
+[gw]
+ip_devname = tun_srsue

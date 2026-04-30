@@ -1,0 +1,100 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.1 (lin64) Build 6140274 Wed May 21 22:58:25 MDT 2025
+| Date         : Fri Apr 24 10:02:18 2026
+| Host         : airan running 64-bit Ubuntu 24.04.4 LTS
+| Command      : upgrade_ip
+| Device       : xc7a100tfgg484-2
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'vio_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of vio_0 (xilinx.com:ip:vio:3.0) from (Rev. 25) to (Rev. 27)
+
+
+
+
+
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.1 (lin64) Build 6140274 Wed May 21 22:58:25 MDT 2025
+| Date         : Fri Apr 24 10:02:18 2026
+| Host         : airan running 64-bit Ubuntu 24.04.4 LTS
+| Command      : upgrade_ip
+| Device       : xc7a100tfgg484-2
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'gen_clks'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of gen_clks (xilinx.com:ip:clk_wiz:6.0) from (Rev. 14) to (Rev. 16)
+
+
+
+
+
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.1 (lin64) Build 6140274 Wed May 21 22:58:25 MDT 2025
+| Date         : Fri Apr 24 10:02:17 2026
+| Host         : airan running 64-bit Ubuntu 24.04.4 LTS
+| Command      : upgrade_ip
+| Device       : xc7a100tfgg484-2
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'fifo_short_2clk'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of fifo_short_2clk (xilinx.com:ip:fifo_generator:13.2) from (Rev. 10) to (Rev. 13)
+
+
+
+
+
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.1 (lin64) Build 6140274 Wed May 21 22:58:25 MDT 2025
+| Date         : Fri Apr 24 10:02:17 2026
+| Host         : airan running 64-bit Ubuntu 24.04.4 LTS
+| Command      : upgrade_ip
+| Device       : xc7a100tfgg484-2
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'fifo_4k_2clk'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of fifo_4k_2clk (xilinx.com:ip:fifo_generator:13.2) from (Rev. 10) to (Rev. 13)
+
+
+
+
+
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.1 (lin64) Build 6140274 Wed May 21 22:58:25 MDT 2025
+| Date         : Fri Apr 24 10:02:17 2026
+| Host         : airan running 64-bit Ubuntu 24.04.4 LTS
+| Command      : upgrade_ip
+| Device       : xc7a100tfgg484-2
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'clk_wiz_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of clk_wiz_0 (xilinx.com:ip:clk_wiz:6.0) from (Rev. 14) to (Rev. 16)
+
