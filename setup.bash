@@ -36,10 +36,10 @@ sudo apt update
 sudo apt install -y open5gs
 
 echo "Applying Open5GS configurations from repository..."
-if [ -f "$REPO_DIR/amf.yaml" ] && [ -f "$REPO_DIR/nrf.yaml" ] && [ -f "$REPO_DIR/upf.yaml" ]; then
-    sudo cp "$REPO_DIR/amf.yaml" /etc/open5gs/amf.yaml
-    sudo cp "$REPO_DIR/nrf.yaml" /etc/open5gs/nrf.yaml
-    sudo cp "$REPO_DIR/upf.yaml" /etc/open5gs/upf.yaml
+if [ -f "$REPO_DIR/Open5gs_config/amf.yaml" ] && [ -f "$REPO_DIR/Open5gs_config/nrf.yaml" ] && [ -f "$REPO_DIR/Open5gs_config/upf.yaml" ]; then
+    sudo cp "$REPO_DIR/Open5gs_config/amf.yaml" /etc/open5gs/amf.yaml
+    sudo cp "$REPO_DIR/Open5gs_config/nrf.yaml" /etc/open5gs/nrf.yaml
+    sudo cp "$REPO_DIR/Open5gs_config/upf.yaml" /etc/open5gs/upf.yaml
     
     echo "Restarting Open5GS services to apply new configurations..."
     sudo systemctl restart open5gs-amfd
