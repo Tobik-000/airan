@@ -36,8 +36,6 @@ sudo apt update
 sudo apt install -y open5gs
 
 echo "Applying Open5GS configurations from repository..."
-# Assuming the configs are in the root of your repo or a 'config' folder. 
-# Adjust the source paths if they are located inside a specific subfolder in your repo.
 if [ -f "$REPO_DIR/amf.yaml" ] && [ -f "$REPO_DIR/nrf.yaml" ] && [ -f "$REPO_DIR/upf.yaml" ]; then
     sudo cp "$REPO_DIR/amf.yaml" /etc/open5gs/amf.yaml
     sudo cp "$REPO_DIR/nrf.yaml" /etc/open5gs/nrf.yaml
@@ -56,27 +54,22 @@ fi
 echo "[3/6] Installing UHD Drivers..."
 sudo apt install -y libuhd-dev uhd-host
 
-# 4. Handle UHD Images via User Input
+# 4. Handle UHD Images
 echo "[4/6] Configuring UHD Images..."
 UHD_IMAGES_DIR="$REPO_DIR/UHD_images"
-TARGET_UHD_DIR="/usr/share/uhd/images"
+SELECTED_UHD_IMAGE=""
 
-# Ensure target directory exists
-sudo mkdir -p "$TARGET_UHD_DIR"
-
+# Step 4a: Select the source image from the repository
 if [ -d "$UHD_IMAGES_DIR" ]; then
     echo "Please select the UHD image you want to use from the UHD_images folder:"
-    # Use standard bash 'select' menu
     PS3="Enter the number of your choice: "
     
     # List all files/folders inside UHD_images
     options=("$UHD_IMAGES_DIR"/*)
     select opt in "${options[@]}"; do
         if [ -n "$opt" ]; then
-            echo "You selected: $(basename "$opt")"
-            echo "Copying to $TARGET_UHD_DIR..."
-            sudo cp -r "$opt" "$TARGET_UHD_DIR/"
-            echo "UHD Image copied successfully."
+            SELECTED_UHD_IMAGE="$opt"
+            echo "You selected: $(basename "$SELECTED_UHD_IMAGE")"
             break
         else
             echo "Invalid selection. Please try again."
@@ -84,7 +77,55 @@ if [ -d "$UHD_IMAGES_DIR" ]; then
     done
 else
     echo "Warning: Directory $UHD_IMAGES_DIR does not exist in the repository."
-    echo "Skipping local UHD image setup. (You may need to run 'sudo uhd_images_downloader' manually)."
+    echo "Skipping local UHD image setup."
+fi
+
+# Step 4b: If an image was selected, ask where to put it
+if [ -n "$SELECTED_UHD_IMAGE" ]; then
+    BASE_UHD_DIR="/usr/share/uhd"
+    echo "Checking available folders in $BASE_UHD_DIR..."
+
+    if [ -d "$BASE_UHD_DIR" ]; then
+        shopt -s nullglob
+        available_dirs=("$BASE_UHD_DIR"/*/)
+        shopt -u nullglob
+
+        if [ ${#available_dirs[@]} -gt 0 ]; then
+            echo "Please select the target directory for the UHD image:"
+            options=("${available_dirs[@]}" "Type a custom path instead")
+            
+            PS3="Enter the number of your choice: "
+            select choice in "${options[@]}"; do
+                if [[ "$choice" == "Type a custom path instead" ]]; then
+                    read -r -p "Enter custom path [/usr/share/uhd/images]: " TARGET_UHD_DIR
+                    TARGET_UHD_DIR=${TARGET_UHD_DIR:-/usr/share/uhd/images}
+                    break
+                elif [[ -n "$choice" ]]; then
+                    TARGET_UHD_DIR="$choice"
+                    break
+                else
+                    echo "Invalid selection. Please try again."
+                fi
+            done
+        else
+            echo "No subdirectories found in $BASE_UHD_DIR."
+            read -r -p "Enter target directory [/usr/share/uhd/images]: " TARGET_UHD_DIR
+            TARGET_UHD_DIR=${TARGET_UHD_DIR:-/usr/share/uhd/images}
+        fi
+    else
+        echo "Directory $BASE_UHD_DIR does not exist."
+        read -r -p "Enter target directory [/usr/share/uhd/images]: " TARGET_UHD_DIR
+        TARGET_UHD_DIR=${TARGET_UHD_DIR:-/usr/share/uhd/images}
+    fi
+
+    # Clean up any trailing slashes and copy
+    TARGET_UHD_DIR=${TARGET_UHD_DIR%/}
+    echo "Target directory set to: $TARGET_UHD_DIR"
+    
+    sudo mkdir -p "$TARGET_UHD_DIR"
+    echo "Copying image to $TARGET_UHD_DIR..."
+    sudo cp -r "$SELECTED_UHD_IMAGE" "$TARGET_UHD_DIR/"
+    echo "UHD Image copied successfully."
 fi
 
 # 5. Clone and Build srsRAN_4G
