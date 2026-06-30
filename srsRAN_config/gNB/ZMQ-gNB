@@ -15,12 +15,11 @@ cu_up:
       - bind_addr: 127.0.0.1
 
 ru_sdr:
-  device_driver: uhd
-  device_args: "type=b200"
-  clock: internal
-  srate: 11.52
-  tx_gain: 70
-  rx_gain: 30
+  device_driver: zmq
+  device_args: tx_port=tcp://127.0.0.1:2000,rx_port=tcp://127.0.0.1:2001,base_srate=23.04e6
+  srate: 23.04
+  tx_gain: 75
+  rx_gain: 75
   time_alignment_calibration: auto
 
 cell_cfg:
@@ -28,7 +27,7 @@ cell_cfg:
   dl_arfcn: 368500
   band: 3
   common_scs: 15
-  channel_bandwidth_MHz: 10
+  channel_bandwidth_MHz: 20
   nof_antennas_dl: 1
   nof_antennas_ul: 1
   plmn: "00101"
