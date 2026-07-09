@@ -6,7 +6,7 @@ device_name = uhd
 device_args = type=b200,clock_source=external
 srate = 11.52e6
 tx_gain = 70
-rx_gain = 30
+rx_gain = 40
 nof_antennas = 1
 time_adv_nsamples = 300
 freq_offset = 0
@@ -18,7 +18,9 @@ freq_offset = 0
 bands = 3
 #bands = 28
 nof_carriers = 1
-# 10MHz = 52 PRBs
+# 20MHz = 106 PRBs
+# 10MHz =  52 PRBs
+#  5MHz =  24 PRBs
 max_nof_prb = 52
 nof_prb = 52
 
