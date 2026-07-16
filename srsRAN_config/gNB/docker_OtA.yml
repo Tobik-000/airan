@@ -20,14 +20,15 @@ cu_cp:
           - plmn: "00101"
             tai_slice_support_list:
               - sst: 1
+  inactivity_timer: 7200
 
 ru_sdr:
   device_driver: uhd
   device_args: type=b200
   clock: internal
   srate: 11.52
-  tx_gain: 80
-  rx_gain: 40
+  tx_gain: 50
+  rx_gain: 50
 
 cell_cfg:
   dl_arfcn: 368500
@@ -52,7 +53,7 @@ cell_cfg:
 
 log:
   filename: /tmp/gnb_docker_OtA.log
-  all_level: info
+  all_level: debug
 
 pcap:
   mac_enable: enable
