@@ -11,9 +11,9 @@
 
 cu_cp:
   amf:
-    addrs: 10.53.1.2
+    addr: 10.53.1.2
     port: 38412
-    bind_addrs: 10.53.1.1
+    bind_addr: 10.53.1.1
     supported_tracking_areas:
       - tac: 7
         plmn_list:
@@ -24,11 +24,14 @@ cu_cp:
 
 ru_sdr:
   device_driver: uhd
-  device_args: type=b200
+  device_args: type=b200,time_source=internal
   clock: internal
+  #sync: gpsdo
   srate: 11.52
-  tx_gain: 50
-  rx_gain: 50
+  tx_gain: 75
+  rx_gain: 40
+  time_alignment_calibration: auto
+
 
 cell_cfg:
   dl_arfcn: 368500
@@ -51,9 +54,13 @@ cell_cfg:
   pusch:
     mcs_table: qam64
 
+expert_phy:
+  pusch_channel_estimator_td_strategy: average
+  pusch_channel_estimator_cfo_compensation: true
+
 log:
   filename: /tmp/gnb_docker_OtA.log
-  all_level: debug
+  all_level: info
 
 pcap:
   mac_enable: enable

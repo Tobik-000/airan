@@ -1,0 +1,14 @@
+[Unit]
+Description=AIRAN Open5GS UE tunnel and forwarding
+After=network-online.target
+Wants=network-online.target
+Before=open5gs-upfd.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/default/airan-open5gs-network
+ExecStart=/usr/local/libexec/airan-open5gs-network
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

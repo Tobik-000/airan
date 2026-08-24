@@ -1,0 +1,302 @@
+# ============================================================
+# OCUDU gNB - COTS UE
+#
+# RF frontend: Ettus USRP B210/B200 family
+# Core: Native Open5GS services
+# Band: n1
+# Bandwidth: 10 MHz
+# SCS: 15 kHz
+# PLMN: 26201
+# TAC: 7
+#
+# Intended for a commercial 5G SA UE, NOT srsUE.
+# ============================================================
+
+
+# ------------------------------------------------------------
+# CU-CP / Open5GS connection
+# ------------------------------------------------------------
+
+cu_cp:
+  amf:
+    addrs: 127.0.1.100
+    port: 38412
+
+    bind_addrs: 127.0.0.1
+
+    supported_tracking_areas:
+      - tac: 7
+        plmn_list:
+          - plmn: "26201"
+            tai_slice_support_list:
+              - sst: 1
+
+  # Keep UE connected for a long time while debugging
+  inactivity_timer: 7200
+
+
+# ------------------------------------------------------------
+# SDR configuration
+# ------------------------------------------------------------
+
+ru_sdr:
+  device_driver: uhd
+
+  # Larger UHD frame queues are useful with the B210
+  device_args: type=b200,num_recv_frames=64,num_send_frames=64
+
+  # ----------------------------------------------------------
+  # CLOCK
+  #
+  # Use external if a verified 10 MHz reference is connected.
+  # Otherwise change this to:
+  #
+  #   clock: internal
+  #
+  # Do NOT use external unless the B210 actually has a
+  # valid external 10 MHz reference.
+  # ----------------------------------------------------------
+  clock: external
+
+  # No common PPS is assumed here
+  sync: internal
+
+  # SDR sample rate
+  srate: 23.04
+
+  # Reduce USB data load on the B210
+  otw_format: sc12
+
+  # Starting values - tune depending on RF setup
+  tx_gain: 75
+  rx_gain: 50
+
+  # No fixed frequency correction initially
+  freq_offset: 0
+  clock_ppm: 0
+
+  # No deliberate LO shift
+  lo_offset: 0
+
+  # Let OCUDU compensate SDR TX/RX timing automatically
+  time_alignment_calibration: auto
+
+
+# ------------------------------------------------------------
+# NR Cell
+# ------------------------------------------------------------
+
+cell_cfg:
+
+  # n1, approximately 2140 MHz downlink
+  dl_arfcn: 428000
+  band: 1
+
+  # n1 with 15 kHz SCS
+  common_scs: 15
+
+  channel_bandwidth_MHz: 10
+
+  # Single B210 RF channel
+  nof_antennas_dl: 1
+  nof_antennas_ul: 1
+
+  pci: 1
+
+  # This must match Open5GS
+  plmn: "26201"
+  tac: 7
+
+  # ----------------------------------------------------------
+  # IMPORTANT:
+  #
+  # Do NOT include the old srsUE-specific PDCCH section:
+  #
+  #   pdcch:
+  #     dedicated:
+  #       ss2_type: common
+  #       dci_format_0_1_and_1_1: false
+  #
+  # A COTS UE should use OCUDU's normal PDCCH defaults.
+  # ----------------------------------------------------------
+
+  # ----------------------------------------------------------
+  # Downlink
+  # ----------------------------------------------------------
+
+  pdsch:
+    # Start conservatively.
+    # qam64 is easier for initial RF debugging than qam256.
+    mcs_table: qam64
+
+    # Allow robust MCS selection
+    min_ue_mcs: 0
+    max_ue_mcs: 28
+
+    # Additional DMRS improves robustness
+    dmrs_additional_position: 2
+
+
+  # ----------------------------------------------------------
+  # Uplink
+  # ----------------------------------------------------------
+
+  pusch:
+    mcs_table: qam64
+
+    min_ue_mcs: 0
+    max_ue_mcs: 28
+
+    # Additional DMRS helps channel estimation/CFO tracking
+    dmrs_additional_position: 2
+
+    # Keep closed-loop power control disabled initially.
+    # Fixed/simple operation is easier to debug.
+    enable_cl_loop_pw_control: false
+
+
+  # ----------------------------------------------------------
+  # PUCCH
+  #
+  # Use conservative defaults.
+  # ----------------------------------------------------------
+
+  pucch:
+    p0_nominal: -90
+    sr_period_ms: 20
+
+    formats: f1_and_f2
+
+    f2_max_nof_rbs: 1
+    f2_max_code_rate: dot35
+
+    enable_cl_loop_pw_control: false
+
+
+  # ----------------------------------------------------------
+  # PRACH
+  #
+  # Let OCUDU derive the appropriate PRACH configuration
+  # for n1/FDD.
+  # ----------------------------------------------------------
+
+  prach:
+    prach_root_sequence_index: 1
+    zero_correlation_zone: 0
+
+    fixed_msg3_mcs: 0
+    max_msg3_harq_retx: 4
+
+    preamble_rx_target_pw: -80
+    preamble_trans_max: 10
+    power_ramping_step_db: 4
+
+
+  # ----------------------------------------------------------
+  # Timing Advance
+  #
+  # Keep OCUDU's adaptive TA tracking enabled.
+  # ----------------------------------------------------------
+
+  ta:
+    ta_measurement_slot_period: 80
+    ta_measurement_slot_prohibit_period: 0
+
+    ta_cmd_offset_threshold: 1
+    ta_target: 1.0
+
+    ta_update_measurement_ul_sinr_threshold: 0
+    ta_outlier_detection_zscore_threshold: 1.75
+
+
+  # ----------------------------------------------------------
+  # RRC timers
+  #
+  # Slightly forgiving values are useful while debugging RF.
+  # ----------------------------------------------------------
+
+  sib:
+    t300: 1000
+    t301: 1000
+
+    t310: 2000
+    n310: 2
+
+    t311: 5000
+    n311: 1
+
+
+# ------------------------------------------------------------
+# PHY expert parameters
+# ------------------------------------------------------------
+
+expert_phy:
+
+  # Reject marginal PRACH detections observed with the UE in airplane mode.
+  prach_th_correction_factor: 1.3
+
+  # IMPORTANT for OTA/COTS operation:
+  # estimate and compensate residual CFO on PUSCH
+  pusch_channel_estimator_cfo_compensation: true
+
+  # Normal channel estimator settings
+  pusch_channel_estimator_fd_strategy: filter
+  pusch_channel_estimator_td_strategy: average
+
+  pusch_sinr_calc_method: post_equalization
+
+  # More robust than forcing decoding
+  pusch_dec_max_iterations: 6
+  pusch_dec_enable_early_stop: true
+  pusch_decoder_force_decoding: false
+
+
+# ------------------------------------------------------------
+# Logging
+# ------------------------------------------------------------
+
+log:
+  filename: /tmp/gnb_COTS_n1.log
+
+  # Keep per-packet layers quiet during sustained user-plane traffic
+  all_level: warning
+
+  # Keep RF/UHD messages visible
+  radio_level: info
+
+  phy_level: warning
+  mac_level: warning
+  rrc_level: info
+  ngap_level: info
+
+  hex_max_size: 0
+
+
+# ------------------------------------------------------------
+# PCAPs
+# ------------------------------------------------------------
+
+pcap:
+
+  mac_enable: true
+  mac_filename: /tmp/gnb_COTS_n1_mac.pcap
+
+  ngap_enable: true
+  ngap_filename: /tmp/gnb_COTS_n1_ngap.pcap
+
+  n3_enable: true
+  n3_filename: /tmp/gnb_COTS_n1_n3.pcap
+
+
+# ------------------------------------------------------------
+# Metrics
+# ------------------------------------------------------------
+
+metrics:
+  autostart_stdout_metrics: false
+
+  layers:
+    enable_sched: true
+
+  periodicity:
+    du_report_period: 1000

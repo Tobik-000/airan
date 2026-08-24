@@ -1,0 +1,8 @@
+services:
+  5gc:
+    build:
+      context: ${AIRAN_OPEN5GS_CONTEXT:?Set AIRAN_OPEN5GS_CONTEXT}
+    environment:
+      SUBSCRIBER_DB: /open5gs/subscriber_db.csv
+    volumes:
+      - ${AIRAN_SUBSCRIBER_DB:?Set AIRAN_SUBSCRIBER_DB}:/open5gs/subscriber_db.csv:ro

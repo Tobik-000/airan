@@ -1,1 +1,16 @@
 /USRP_image_collection/LIBRESDR_USRP_XCA7200TCore_B210mini/
+
+# Build and editor artifacts
+**/build/
+__pycache__/
+*.log
+*.swp
+docker_logs.log
+
+# Machine-specific Open5GS backups and subscriber credentials
+Open5gs_config/*-native.yaml
+Open5gs_config/native-backup-*/
+Open5gs_config/*.archive.gz
+Open5gs_config/grub
+**/subscriber_db.csv
+OCUDU_setup/*.private.env

@@ -9,8 +9,11 @@ global:
 nrf:
   serving:
     - plmn_id:
-        mcc: 001
+        mcc: 262
         mnc: 01
+    - plmn_id:
+        mcc: 999
+        mnc: 70
 
   sbi:
     server:
